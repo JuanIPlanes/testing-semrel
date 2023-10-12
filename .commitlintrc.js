@@ -1,10 +1,11 @@
-// const { execSync } = require('child_process')
+import { execSync } from 'child_process'
 
-// // @tip: git branch name = feature/issue_33   =>    auto get defaultIssues = #33
-// const issue = execSync('git rev-parse --abbrev-ref HEAD')
-//     .toString()
-//     .trim()
-//     .split("_")[1]
+// // @tip: git branch name = feature/issue_33   =>    auto get defaultIssues = #33 or bugfix/103 => #103
+const issue = execSync('git rev-parse --abbrev-ref HEAD')
+    .toString()
+    .trim()
+    .split('_')
+    .pop()
 
 // const gitStatus = execSync('git status --porcelain || true')
 //     .toString()
@@ -21,81 +22,128 @@
 //         ?.replace(/(\/)/g, '%%')
 //         ?.match(/src%%((\w|-)*)/)?.[1];
 
-
-/** @type {import('cz-git').UserConfig} */
-module.exports = {
-
+/** @type {import('czg').UserConfig} */
+export default {
     prompt: {
         // defaultScope: scopeComplete,
         // customScopesAlign: !scopeComplete ? 'top-bottom' : 'bottom',
         // defaultSubject: subjectComplete && `[${subjectComplete}]    `,
-        // customIssuePrefixAlign: !issue ? "top" : "bottom",
-        // defaultIssues: !issue ? "" : `#${issue}`,
-        alias: { fd: "docs: fix typos" },
+        customIssuePrefixAlign: !issue ? 'top' : 'bottom',
+        defaultIssues: !issue ? '' : `#${issue}`,
+        alias: { fd: 'docs: fix typos' },
         messages: {
             type: "Select the type of change that you're committing:",
-            scope: "Denote the SCOPE of this change ([optional] e.g. component or file name):",
-            customScope: "Denote the SCOPE of this change:",
-            subject: "Write a SHORT, IMPERATIVE tense description of the change:\n",
+            scope:
+                'Denote the SCOPE of this change ([optional] e.g. component or file name):',
+            customScope: 'Denote the SCOPE of this change:',
+            subject: 'Write a SHORT, IMPERATIVE tense description of the change:\n',
             body: 'Provide a LONGER description of the change (optional). Use "|" to break new line:\n',
             markBreaking: 'Are there any breaking changes?',
-            breaking: 'List any BREAKING CHANGES (optional). Use "|" to break new line:\n',
-            footerPrefixesSelect: "Select the ISSUES type of changeList by this change (optional):",
-            customFooterPrefix: "Input ISSUES prefix:",
-            footer: "List any ISSUES by this change. E.g.: #31, #34:\n",
+            breaking:
+                'List any BREAKING CHANGES (optional). Use "|" to break new line:\n',
+            footerPrefixesSelect:
+                'Select the ISSUES type of changeList by this change (optional):',
+            customFooterPrefix: 'Input ISSUES prefix:',
+            footer: 'List any ISSUES by this change. E.g.: #31, #34:\n',
             //   generatingByAI: 'Generating your AI commit subject...',
             //   generatedSelectByAI: 'Select suitable subject by AI generated:',
-            confirmCommit: "Are you sure you want to proceed with the commit above?"
+            confirmCommit: 'Are you sure you want to proceed with the commit above?',
         },
         types: [
-            { value: "feat", name: "feat:     ✨  A new feature", emoji: ":sparkles:" },
-            { value: "fix", name: "fix:      🐛  A bug fix", emoji: ":bug:" },
-            { value: "docs", name: "docs:     📝  Documentation only changes", emoji: ":memo:" },
-            { value: "style", name: "style:    💄  Changes that do not affect the meaning of the code", emoji: ":lipstick:" },
-            { value: "refactor", name: "refactor: ♻️   A code change that neither fixes a bug nor adds a feature", emoji: ":recycle:" },
-            { value: "perf", name: "perf:     ⚡️  A code change that improves performance", emoji: ":zap:" },
-            { value: "test", name: "test:     ✅  Adding missing tests or correcting existing tests", emoji: ":white_check_mark:" },
-            { value: "build", name: "build:    📦️   Changes that affect the build system or external dependencies", emoji: ":package:" },
-            { value: "ci", name: "ci:       ⚙️  Changes to our CI configuration files and scripts", emoji: "gear" },
-            { value: "chore", name: "chore:    🔨  Other changes that don't modify src or test files", emoji: ":hammer:" },
-            { value: "revert", name: "revert:   ⏪️  Reverts a previous commit", emoji: ":rewind:" }
+            {
+                value: 'feat',
+                name: 'feat:     ✨  A new feature',
+                emoji: ':sparkles:',
+            },
+            { value: 'fix', name: 'fix:      🐛  A bug fix', emoji: ':bug:' },
+            {
+                value: 'docs',
+                name: 'docs:     📝  Documentation only changes',
+                emoji: ':memo:',
+            },
+            {
+                value: 'style',
+                name: 'style:    💄  Changes that do not affect the meaning of the code',
+                emoji: ':lipstick:',
+            },
+            {
+                value: 'refactor',
+                name: 'refactor: ♻️   A code change that neither fixes a bug nor adds a feature',
+                emoji: ':recycle:',
+            },
+            {
+                value: 'perf',
+                name: 'perf:     ⚡️  A code change that improves performance',
+                emoji: ':zap:',
+            },
+            {
+                value: 'test',
+                name: 'test:     ✅  Adding missing tests or correcting existing tests',
+                emoji: ':white_check_mark:',
+            },
+            {
+                value: 'build',
+                name: 'build:    📦️   Changes that affect the build system or external dependencies',
+                emoji: ':package:',
+            },
+            {
+                value: 'ci',
+                name: 'ci:       ⚙️  Changes to our CI configuration files and scripts',
+                emoji: ':gear:',
+            },
+            {
+                value: 'chore',
+                name: "chore:    🔨  Other changes that don't modify src or test files",
+                emoji: ':hammer:',
+            },
+            {
+                value: 'revert',
+                name: 'revert:   ⏪️  Reverts a previous commit',
+                emoji: ':rewind:',
+            },
         ],
         useEmoji: true,
-        emojiAlign: "center",
+        emojiAlign: 'center',
         useAI: false,
         aiNumber: 1,
-        themeColorCode: "",
+        themeColorCode: '',
         scopes: [],
         allowCustomScopes: true,
         allowEmptyScopes: true,
-        customScopesAlign: "bottom",
-        customScopesAlias: "custom",
-        emptyScopesAlias: "empty",
+        customScopesAlign: 'bottom',
+        customScopesAlias: 'custom',
+        emptyScopesAlias: 'empty',
         upperCaseSubject: false,
         markBreakingChangeMode: true,
         allowBreakingChanges: ['feat', 'fix'],
-        breaklineNumber: 100,
-        breaklineChar: "|",
+        // breaklineNumber: 100,
+        breaklineChar: '|',
         skipQuestions: [],
-        issuePrefixes: [{ value: "closed", name: "closed:   ISSUES has been processed" }],
-        customIssuePrefixAlign: "top",
-        emptyIssuePrefixAlias: "skip",
-        customIssuePrefixAlias: "custom",
+        issuePrefixes: [
+            { value: 'closed', name: 'closed:   ISSUES has been processed' },
+        ],
+        customIssuePrefixAlign: 'top',
+        emptyIssuePrefixAlias: 'skip',
+        customIssuePrefixAlias: 'custom',
         allowCustomIssuePrefix: true,
         allowEmptyIssuePrefix: true,
         confirmColorize: true,
-        maxHeaderLength: Infinity,
-        maxSubjectLength: Infinity,
+        // maxHeaderLength: Infinity,
+        // maxSubjectLength: Infinity,
         minSubjectLength: 0,
         scopeOverrides: undefined,
-        defaultBody: ""
+        defaultBody: '',
     },
+
     rules: {
+        'header-max-length': [2, 'always', 100],
+
         'body-leading-blank': [1, 'always'],
-        'body-max-line-length': [2, 'always', 100],
+        'body-max-line-length': () => [2, 'always', 100],
+
         'footer-leading-blank': [1, 'always'],
         'footer-max-line-length': [2, 'always', 100],
-        'header-max-length': [2, 'always', 100],
+
         'subject-case': [
             2,
             'never',
@@ -103,6 +151,7 @@ module.exports = {
         ],
         'subject-empty': [2, 'never'],
         'subject-full-stop': [2, 'never', '.'],
+
         'type-case': [2, 'always', 'lower-case'],
         'type-empty': [2, 'never'],
         'type-enum': [
@@ -123,4 +172,4 @@ module.exports = {
             ],
         ],
     },
-};
+}
